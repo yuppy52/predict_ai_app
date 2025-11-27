@@ -38,7 +38,9 @@ staticfiles/
 *.keras
 models/*.h5
 models/*.keras
-data/stock_images/*.png
+data/stock_images/**/*.png
+data/stock_images/**/metadata.csv
+data/*.csv
 
 # Node/React
 node_modules/
