@@ -37,6 +37,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+python manage.py migrate
 ```
 
 ### フロントエンド
@@ -46,11 +47,58 @@ cd frontend
 npm install
 ```
 
+## 起動方法
+
+### バックエンド起動
+
+```bash
+cd backend
+source venv/bin/activate  # Windows: venv\Scripts\activate
+python manage.py runserver
+```
+
+バックエンドは `http://localhost:8000` で起動します。
+
+### フロントエンド起動
+
+別のターミナルを開いて：
+
+```bash
+cd frontend
+npm start
+```
+
+フロントエンドは `http://localhost:3000` で起動し、ブラウザが自動で開きます。
+
+## API エンドポイント
+
+- `GET /api/health/` - ヘルスチェック
+- `GET /api/stocks/` - 銘柄リスト・時間軸取得
+- `POST /api/predict/` - 株価予測（現在はダミーデータ）
+  - Request: `{"stock_code": "7203.T", "timeframe": "daily"}`
+  - Response: `{"stock_code": "7203.T", "stock_name": "トヨタ自動車", "prediction": {"up_probability": 60, "down_probability": 40}}`
+
 ## 開発状況
 
 - [x] 要件定義
-- [ ] プロジェクト構造作成
-- [ ] データ取得テスト
-- [ ] AIモデル開発
-- [ ] バックエンドAPI開発
-- [ ] フロントエンド開発
+- [x] プロジェクト構造作成
+- [x] モックデータ生成
+- [x] ローソク足画像生成
+- [x] バックエンドAPI開発（Django REST Framework）
+- [x] フロントエンド開発（React）
+- [ ] AIモデル学習と統合
+
+## 次のステップ
+
+### AIモデルの学習（ローカル環境で実行）
+
+```bash
+# 学習データ画像生成（既に7,149枚生成済み）
+python ml_training/generate_candlestick_images.py
+
+# モデル学習
+python ml_training/train_model.py
+```
+
+学習が完了したら、`models/stock_prediction_model.keras` に保存されます。
+その後、バックエンドの `views.py` を修正して、ダミー予測から実際のAIモデルを使った予測に切り替えます。
